@@ -1,0 +1,96 @@
+# Author: kikairoya <kikairoya@gmail.com>
+# Build order: ... -> raspi-glibc -> raspi-gcc -> other libraries
+
+_target=armv6l-raspi-linux-gnueabihf
+_binprefix=${_target}
+pkgname=raspi-gcc
+_pkgname=gcc
+pkgver=4.8.2
+pkgrel=1
+pkgdesc="The GNU Compiler Collection (Raspberry Pi)"
+arch=('i686' 'x86_64')
+license=('GPL' 'LGPL' 'FDL' 'custom')
+url="http://gcc.gnu.org/"
+depends=('raspi-binutils>=2.23' 'gcc-libs>=4.8.0' 'libmpc' raspi-glibc ppl cloog)
+makedepends=(raspi-gcc-stage2)
+provides=("raspi-gcc-stage1=${pkgver}" "raspi-gcc-stage2=${pkgver}")
+conflicts=(raspi-gcc-stage1 raspi-gcc-stage2)
+replaces=(raspi-gcc-stage1 raspi-gcc-stage2)
+options=('!libtool' '!emptydirs' '!strip' '!buildflags')
+source=(http://ftp.gnu.org/gnu/gcc/${_pkgname}-${pkgver}/gcc-${pkgver}.tar.bz2)
+
+_basedir=${_pkgname}-${pkgver}
+
+build() {
+  unset CPPFLAGS
+
+  cd ${srcdir}/${_basedir}
+
+  sed -i '/k prot/agcc_cv_libc_provides_ssp=yes' gcc/configure
+
+  echo ${pkgver} > gcc/BASE-VER
+
+  cd ${srcdir}
+  rm -rf gcc-build
+  mkdir gcc-build && cd gcc-build
+
+  ${srcdir}/${_basedir}/configure \
+    --with-sysroot=/usr/${_target}/sysroot \
+    --target=${_target} \
+    --prefix=/usr \
+    --libdir=/usr/lib \
+    --libexecdir=/usr/lib \
+    --enable-languages=c,c++ \
+    --with-system-zlib \
+    --enable-shared \
+    --enable-threads=posix \
+    --enable-__cxa_atexit \
+    --disable-libunwind-exceptions \
+    --enable-clocale=gnu \
+    --disable-libstdcxx-pch \
+    --enable-libstdcxx-time \
+    --enable-gnu-unique-object \
+    --enable-linker-build-id \
+    --with-ppl \
+    --enable-cloog-backend=isl \
+    --disable-ppl-version-check \
+    --disable-cloog-version-check \
+    --enable-lto \
+    --enable-gold \
+    --enable-ld=default \
+    --enable-plugin \
+    --with-plugin-ld=ld.gold \
+    --with-linker-hash-style=gnu \
+    --disable-multilib \
+    --disable-libssp \
+    --with-as=/usr/bin/${_target}-as \
+    --with-ld=/usr/bin/${_target}-ld \
+    --with-arch=armv6 \
+    --with-float=hard \
+    --with-fpu=vfp
+
+  make
+}
+
+package() {
+  unset CPPFLAGS
+  cd ${srcdir}/gcc-build
+
+  make -j1 DESTDIR=${pkgdir} install
+
+  # Strip debug symbols from libraries; without this, the package size balloons to ~500MB.
+  find ${pkgdir}/usr/lib -type f -name "*.a" \
+    -exec /usr/bin/${_binprefix}-strip --strip-debug '{}' \;
+
+  # Install Runtime Library Exception
+  install -Dm644 ${srcdir}/${_basedir}/COPYING.RUNTIME \
+    ${pkgdir}/usr/share/licenses/${pkgname}/RUNTIME.LIBRARY.EXCEPTION
+
+  rm -rf ${pkgdir}/usr/share/locale
+  rm -rf ${pkgdir}/usr/lib/libiberty.a
+  rm -rf ${pkgdir}/usr/share/gcc-4.8.2
+  rm -rf ${pkgdir}/usr/share/man/man7
+  rm -rf ${pkgdir}/usr/share/info
+}
+
+md5sums=('a3d7d63b9cb6b6ea049469a0c4a43c9d')

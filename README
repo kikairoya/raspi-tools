@@ -1,1 +1,15 @@
 cross toolset for Raspberry Pi (armv6l-raspi-linux-gnueabihf)
+
+build order:
+ raspi-filesystem
+ raspi-linux-api-headers
+ raspi-binutils
+ raspi-gcc-stage1
+ raspi-glibc-stage1
+ raspi-gcc-stage2
+ raspi-glibc
+ raspi-gcc
+ raspi-zlib
+ raspi-bzip2
+ raspi-openssl
+ raspi-boost

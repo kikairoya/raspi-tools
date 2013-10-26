@@ -1,0 +1,45 @@
+# Author: kikairoya <kikairoya@gmail.com>
+# Build order: raspi-linux-api-headers -> raspi-binutils -> ...
+
+_target=armv6l-raspi-linux-gnueabihf
+pkgname=raspi-linux-api-headers
+pkgver=3.11.6
+_basever=3.11
+pkgrel=1
+pkgdesc="Kernel headers sanitized for use in userspace (Raspberry Pi)"
+arch=(any)
+url="http://www.gnu.org/software/libc"
+license=('GPL2')
+provides=("raspi-linux-api-headers=${_basever}" "raspi-linux-api-headers31")
+options=('!libtool' '!buildflags')
+source=("http://www.kernel.org/pub/linux/kernel/v3.x/linux-${pkgver}.tar.xz")
+md5sums=('SKIP')
+
+
+build() {
+  cd ${srcdir}/linux-${pkgver}
+
+  make ARCH=arm mrproper
+  make ARCH=arm headers_check
+}
+
+package() {
+  cd ${srcdir}/linux-${pkgver}
+
+  make INSTALL_HDR_PATH=${pkgdir}/usr/${_target}/ ARCH=arm V=0  headers_install
+
+  # use headers from libdrm
+  #rm -rf ${pkgdir}/usr/include/drm
+  # clean-up unnecessary files generated during install
+  find ${pkgdir} -name .install -or -name ..install.cmd | xargs rm -f
+
+  #
+  #mkdir -p ${pkgdir}/usr/${_target}/usr
+  #(
+  # cd ${pkgdir}/usr/${_target}/usr
+  # ln -s ../{include,lib} .
+  #)
+}
+
+
+

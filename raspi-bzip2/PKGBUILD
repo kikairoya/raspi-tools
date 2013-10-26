@@ -1,0 +1,37 @@
+# Author: kikairoya <kikairoya@gmail.com>
+
+_target=armv6l-raspi-linux-gnueabihf
+_binprefix=${_target}
+pkgname=raspi-bzip2
+_pkgname=bzip2
+pkgver=1.0.6
+pkgrel=1
+pkgdesc="A high-quality data compression program (Raspberry Pi)"
+arch=(any)
+license=('custom')
+url="http://sources.redhat.com/bzip2"
+groups=('base')
+depends=(raspi-glibc)
+makedepends=(raspi-binutils raspi-gcc)
+options=('!libtool' '!emptydirs' '!strip' '!buildflags')
+source=(http://www.bzip.org/$pkgver/bzip2-$pkgver.tar.gz)
+sha1sums=('3f89f861209ce81a6bab1fd1998c0ef311712002')
+
+build() {
+  cd "$srcdir/$_pkgname-$pkgver"
+
+  make -f Makefile-libbz2_so CC=${_binprefix}-gcc
+}
+
+package() {
+  cd "$srcdir/$_pkgname-$pkgver"
+
+  install -dm755 $pkgdir/usr/$_target/{lib,include}
+  install -m755 libbz2.so.1.0.6 $pkgdir/usr/$_target/lib
+  ln -s libbz2.so.1.0.6 $pkgdir/usr/$_target/lib/libbz2.so
+  ln -s libbz2.so.1.0.6 $pkgdir/usr/$_target/lib/libbz2.so.1
+  ln -s libbz2.so.1.0.6 $pkgdir/usr/$_target/lib/libbz2.so.1.0
+  install -m644 bzlib.h $pkgdir/usr/$_target/include/
+  install -Dm644 $srcdir/${_pkgname}-${pkgver}/LICENSE \
+                 $pkgdir/usr/share/licenses/${pkgname}/LICENSE
+}

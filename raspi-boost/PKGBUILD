@@ -1,0 +1,76 @@
+# Author: kikairoya <kikairoya@gmail.com>
+
+_target=armv6l-raspi-linux-gnueabihf
+_binprefix=${_target}
+pkgname=raspi-boost
+pkgver=1.54.0
+_boostver=${pkgver//./_}
+pkgrel=1
+pkgdesc="Free peer-reviewed portable C++ source libraries (Raspberry Pi)"
+arch=(any)
+url="http://www.boost.org/"
+license=('custom')
+depends=(raspi-glibc raspi-zlib raspi-bzip2)
+makedepends=(raspi-gcc boost-build bzip2)
+options=('!libtool' '!emptydirs' '!strip' '!buildflags')
+source=(http://downloads.sourceforge.net/sourceforge/boost/boost_${_boostver}.tar.bz2)
+md5sums=('15cb8c0803064faef0c4ddf5bc5ca279')
+
+
+build() {
+  unset CPPFLAGS
+
+  cd ${srcdir}/boost_${_boostver}
+  rm -rf stage bin.v2
+  cat > user-config.jam << EOF
+using gcc
+  : raspi
+  : ${_binprefix}-g++
+  : <cxxflags>-std=c++11
+    <cxxflags>-Wno-unused-local-typedefs
+    <target-os>linux
+    <rc>${_binprefix}-rc
+    <archiver>${_binprefix}-ar
+  ;
+EOF
+
+  /usr/bin/bjam \
+    toolset=gcc-raspi \
+    variant=release \
+    threading=multi \
+    link=shared,static \
+    runtime-link=shared \
+    --prefix=${pkgdir}/usr/${_target} \
+    --user-config=user-config.jam \
+    --without-context \
+    --without-coroutine \
+    --without-mpi \
+    --without-python \
+    ${MAKEFLAGS} \
+    --layout=system
+
+}
+
+package() {
+  unset CPPFLAGS
+
+  cd ${srcdir}/boost_${_boostver}
+
+  /usr/bin/bjam \
+    toolset=gcc-raspi \
+    variant=release \
+    threading=multi \
+    link=shared,static \
+    runtime-link=shared \
+    --prefix=${pkgdir}/usr/${_target} \
+    --user-config=user-config.jam \
+    --without-context \
+    --without-coroutine \
+    --without-mpi \
+    --without-python \
+    ${MAKEFLAGS} \
+    --layout=system install
+
+    ${_binprefix}-strip -g $pkgdir/usr/${_target}/lib/*.a
+
+}

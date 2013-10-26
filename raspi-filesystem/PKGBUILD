@@ -1,0 +1,59 @@
+# Author: kikairoya <kikairoya@gmail.com>
+# Build order: raspi-filesystem -> raspi-linux-api-headers -> ...
+
+_target=armv6l-raspi-linux-gnueabihf
+pkgname=raspi-filesystem
+pkgver=3.11.6
+_basever=3.11
+pkgrel=1
+pkgdesc="Base filesystem (Raspberry Pi)"
+arch=(any)
+url="http://www.gnu.org/software/libc"
+license=('GPL2')
+options=('!libtool' '!buildflags')
+source=()
+md5sums=()
+
+
+build() {
+  true
+}
+
+package() {
+  cd ${pkgdir}
+  mkdir -p usr/${_target}/{bin,lib,include,share,etc,sysroot/usr}
+  mkdir -p usr/bin
+
+  cat > usr/bin/raspi-env <<EOF
+#!/bin/bash
+ADDR2LINE=${_binprefix}-addr2line
+AR=${_binprefix}-ar
+AS=${_binprefix}-as
+CC=${_binprefix}-gcc
+CPP=${_binprefix}-cpp
+CXX=${_binprefix}-g++
+LD=${_binprefix}-ld
+NM=${_binprefix}-nm
+OBJCOPY=${_binprefix}-objcopy
+OBJDUMP=${_binprefix}-objdump
+RANLIB=${_binprefix}-ranlib
+READELF=${_binprefix}-readelf
+SIZE=${_binprefix}-size
+STRINGS=${_binprefix}-strings
+STRIP=${_binprefix}-strip
+export ADDR2LINE AR AS CC CPP CXX LD NM OBJCOPY OBJDUMP RANLIB READELF SIZE STRING STRIP
+exec "\$@"
+EOF
+  chmod 755 usr/bin/raspi-env
+
+  cd usr/${_target}
+  ln -s lib lib64
+
+  cd sysroot/usr
+  for d in bin lib lib64 include share etc; do
+    ln -s ../../$d .
+  done
+}
+
+
+
