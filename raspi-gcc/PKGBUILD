@@ -6,7 +6,7 @@ _binprefix=${_target}
 pkgname=raspi-gcc
 _pkgname=gcc
 pkgver=4.8.2
-pkgrel=1
+pkgrel=2
 pkgdesc="The GNU Compiler Collection (Raspberry Pi)"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL' 'FDL' 'custom')
@@ -16,7 +16,7 @@ makedepends=(raspi-gcc-stage2)
 provides=("raspi-gcc-stage1=${pkgver}" "raspi-gcc-stage2=${pkgver}")
 conflicts=(raspi-gcc-stage1 raspi-gcc-stage2)
 replaces=(raspi-gcc-stage1 raspi-gcc-stage2)
-options=('!libtool' '!emptydirs' '!strip' '!buildflags')
+options=('!libtool' '!emptydirs' '!strip' '!buildflags' 'staticlibs')
 source=(http://ftp.gnu.org/gnu/gcc/${_pkgname}-${pkgver}/gcc-${pkgver}.tar.bz2)
 
 _basedir=${_pkgname}-${pkgver}

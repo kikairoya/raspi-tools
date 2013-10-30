@@ -4,14 +4,14 @@ _target=armv6l-raspi-linux-gnueabihf
 _binprefix=${_target}
 pkgname=raspi-zlib
 pkgver=1.2.8
-pkgrel=1
+pkgrel=2
 pkgdesc='Compression library implementing the deflate compression method found in gzip and PKZIP (Raspberry Pi)'
 arch=(any)
 license=('custom')
 url="http://www.zlib.net/"
 depends=('raspi-glibc')
 makedepends=(raspi-binutils raspi-gcc)
-options=('!libtool' '!emptydirs' '!strip' '!buildflags')
+options=('!libtool' '!emptydirs' '!strip' '!buildflags' 'staticlibs')
 source=("http://zlib.net/current/zlib-${pkgver}.tar.gz")
 md5sums=('44d667c142d7cda120332623eab69f40')
 

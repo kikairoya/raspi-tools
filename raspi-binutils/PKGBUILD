@@ -5,13 +5,13 @@ _target=armv6l-raspi-linux-gnueabihf
 _binprefix=${_target}
 pkgname=raspi-binutils
 pkgver=2.23.2
-pkgrel=1
+pkgrel=2
 pkgdesc="A set of programs to assemble and manipulate binary and object files (Raspberry Pi)"
 arch=('i686' 'x86_64')
 url="http://www.gnu.org/software/binutils/"
 license=('GPL')
 depends=('glibc>=2.17' 'zlib' 'binutils')
-options=('!libtool' '!distcc' '!ccache' '!buildflags')
+options=('!libtool' '!distcc' '!ccache' '!buildflags' 'staticlibs')
 install=raspi-binutils.install
 source=(ftp://ftp.gnu.org/gnu/binutils/binutils-${pkgver}.tar.bz2{,.sig}
         binutils-2.23.2-texinfo-5.0.patch)

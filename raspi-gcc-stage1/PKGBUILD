@@ -6,13 +6,13 @@ _binprefix=${_target}
 pkgname=raspi-gcc-stage1
 _pkgname=gcc
 pkgver=4.8.2
-pkgrel=2
+pkgrel=3
 pkgdesc="The GNU Compiler Collection (Raspberry Pi)"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL' 'FDL' 'custom')
 url="http://gcc.gnu.org/"
 depends=('raspi-binutils>=2.23' 'gcc-libs>=4.8.0' 'libmpc')
-options=('!libtool' '!emptydirs' '!strip' '!buildflags')
+options=('!libtool' '!emptydirs' '!strip' '!buildflags' 'staticlibs')
 source=(http://ftp.gnu.org/gnu/gcc/${_pkgname}-${pkgver}/gcc-${pkgver}.tar.bz2)
 
 _basedir=${_pkgname}-${pkgver}

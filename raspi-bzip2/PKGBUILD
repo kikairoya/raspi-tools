@@ -5,7 +5,7 @@ _binprefix=${_target}
 pkgname=raspi-bzip2
 _pkgname=bzip2
 pkgver=1.0.6
-pkgrel=1
+pkgrel=2
 pkgdesc="A high-quality data compression program (Raspberry Pi)"
 arch=(any)
 license=('custom')
@@ -13,7 +13,7 @@ url="http://sources.redhat.com/bzip2"
 groups=('base')
 depends=(raspi-glibc)
 makedepends=(raspi-binutils raspi-gcc)
-options=('!libtool' '!emptydirs' '!strip' '!buildflags')
+options=('!libtool' '!emptydirs' '!strip' '!buildflags' 'staticlibs')
 source=(http://www.bzip.org/$pkgver/bzip2-$pkgver.tar.gz)
 sha1sums=('3f89f861209ce81a6bab1fd1998c0ef311712002')
 

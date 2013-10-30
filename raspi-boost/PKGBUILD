@@ -5,14 +5,14 @@ _binprefix=${_target}
 pkgname=raspi-boost
 pkgver=1.54.0
 _boostver=${pkgver//./_}
-pkgrel=2
+pkgrel=3
 pkgdesc="Free peer-reviewed portable C++ source libraries (Raspberry Pi)"
 arch=(any)
 url="http://www.boost.org/"
 license=('custom')
 depends=(raspi-glibc raspi-zlib raspi-bzip2)
 makedepends=(raspi-gcc bzip2 python)
-options=('!libtool' '!emptydirs' '!strip' '!buildflags')
+options=('!libtool' '!emptydirs' '!strip' '!buildflags' 'staticlibs')
 source=(http://downloads.sourceforge.net/sourceforge/boost/boost_${_boostver}.tar.bz2)
 md5sums=('15cb8c0803064faef0c4ddf5bc5ca279')
 
