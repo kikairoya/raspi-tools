@@ -5,13 +5,13 @@ _binprefix=${_target}
 pkgname=raspi-boost
 pkgver=1.54.0
 _boostver=${pkgver//./_}
-pkgrel=1
+pkgrel=2
 pkgdesc="Free peer-reviewed portable C++ source libraries (Raspberry Pi)"
 arch=(any)
 url="http://www.boost.org/"
 license=('custom')
 depends=(raspi-glibc raspi-zlib raspi-bzip2)
-makedepends=(raspi-gcc boost-build bzip2)
+makedepends=(raspi-gcc bzip2 python)
 options=('!libtool' '!emptydirs' '!strip' '!buildflags')
 source=(http://downloads.sourceforge.net/sourceforge/boost/boost_${_boostver}.tar.bz2)
 md5sums=('15cb8c0803064faef0c4ddf5bc5ca279')
@@ -34,7 +34,13 @@ using gcc
   ;
 EOF
 
-  /usr/bin/bjam \
+  ./bootstrap.sh \
+    --with-toolset=gcc \
+    --with-python=/usr/bin/python \
+    --with-python-root=/usr \
+    --without-icu
+
+  ./b2 \
     toolset=gcc-raspi \
     variant=release \
     threading=multi \
@@ -56,7 +62,7 @@ package() {
 
   cd ${srcdir}/boost_${_boostver}
 
-  /usr/bin/bjam \
+  ./b2 \
     toolset=gcc-raspi \
     variant=release \
     threading=multi \
