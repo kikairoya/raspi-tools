@@ -2,11 +2,11 @@
 # Build order: ... -> raspi-binutils -> raspi-gcc-stage1 -> raspi-glibc-stage1 -> ...
 
 _target=armv6l-raspi-linux-gnueabihf
-_binprefix=@@binprefix
+_binprefix=${_target}
 pkgname=raspi-gcc-stage1
 _pkgname=gcc
 pkgver=4.8.2
-pkgrel=1
+pkgrel=2
 pkgdesc="The GNU Compiler Collection (Raspberry Pi)"
 arch=('i686' 'x86_64')
 license=('GPL' 'LGPL' 'FDL' 'custom')
